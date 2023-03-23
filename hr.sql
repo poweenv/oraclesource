@@ -403,42 +403,48 @@ where
      e1.department_id = e2.department_id
     AND e1.hire_date < e2.hire_date
     AND e1.salary < e2.salary;
-    
+--0323
 --subquary
 --LAST_NAME 에 u가 포함된 사원들과 동일 부서에 근무하는 사원들의 사번, last_name 조회
 select employee_id,last_name
-from employees
-where department_id in (select last_name from employees where last_name like '%u%');
+from employees e
+where e.department_id in (select distinct department_id from employees where last_name like '%u%');
 
 
 
 --job_id 가 SA_MAN인 사원들의 최대 연봉보다 높게 받는 사원들의 last_name, job_id,salary 조회
 select last_name, job_id,salary
 from employees
-where salary > (select job_id from employees where job_id='SA_MAN');
+where salary > (select max(salary) from employees where job_id='SA_MAN');
 
 
 --커미션을 버는 사원들의 부서와 연봉이 동일한 사원들의 last_name,department_id, salary 조회
 select last_name,department_id, salary
 from employees
-where department_id in (select salary from employees where commission_pct is not null); 
+where (department_id,salary)
+in (select department_id,salary 
+from employees where commission_pct>0); 
 
 
 --회사 전체 평균 연봉보다 더 받는 사원들 중 last_name에 u가 있는 사원들이 근무하는 부서에서 
 --근무하는 사원들의 employee_id,last_name,salary 조회
 select employee_id,last_name,salary
-from employees
-where avg(salary) < (select last_name from employees where last_name like '%u%');
+    from (select distinct department_id
+    from employees where salary> (select round(avg(salary),0)
+    from employees)and last_name like '%u%') dept,employees e
+where e.department_id = dept.department_id
+order by employee_id;
 
 
 --last_name 이 Davies 인 사람보다 나중에 고용된 사원들의 last_name,hire_date 조회
 select last_name,hire_date
 from employees
-where hire_date < (select last_name from employees where last_name like 'Davies');
+where hire_date < (select last_name
+from employees where last_name like 'Davies');
 --last_name이 king 인 사원을 매니저로 두고 있는 모든 사원들의 last_name, salary 조회
-select last_name, salary
+select last_name,salary
 from employees
-where manager_id = (select last_name from employees where last_name= 'king');
+where manager_id in (select employee_id from employees where last_name= 'King');
 
 
 
