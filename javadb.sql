@@ -66,12 +66,12 @@ create sequence product_seq;
 create table sorder(
     order_id number(8) primary key,
     user_id number(4) references suser(user_id) not null,
-    procuct_id number(8) references product(product_id) not null
+    product_id number(8) references product(product_id) not null
 );
 create sequence order_seq;
 
-
-
+alter table sorder add order_date DATE; -- 구매날짜
+--insert into sorder values(order_seq.nextval,물건을 구매한id,상품id,날짜)
 commit;
 
 
