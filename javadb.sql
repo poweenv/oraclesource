@@ -69,16 +69,27 @@ create table sorder(
     product_id number(8) references product(product_id) not null
 );
 create sequence order_seq;
-
+drop table sorder;
 alter table sorder add order_date DATE; -- 구매날짜
 --insert into sorder values(order_seq.nextval,물건을 구매한id,상품id,날짜)
 commit;
 
+select u.user_id,u.name, p.pay_no,p.info
+from suser u join paytype p on u.pay_no=p.pay_no where u.user_id=1000;
 
 
+select * from sorder;
 
+-- 주문목록 조회
+-- user_id, name, card/cash, product_id, pname, price, content
+select s.user_id, u.name, t.info, p.product_id, p.pname, p.price, p.content, s.order_date
+from suser u, product p, paytype t, sorder s
+where u.user_id=s.user_id and u.pay_no=t.pay_no and s.product_id=p.product_id;
 
-
+-- 기준 : sorder
+-- suser 테이블 : name, 
+-- paytype 테이블 : info,
+-- product 테이블 : product_id, pname, price, content
 
 
 
